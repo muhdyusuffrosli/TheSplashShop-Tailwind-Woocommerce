@@ -1395,66 +1395,9 @@ function shopchop_preorder_item_name_badge( $name, $item, $is_visible ) {
 
 
 /**
- * Render styled marks for custom stock statuses in the WP-Admin product list.
- *
- * @param string     $html    Default admin stock HTML.
- * @param WC_Product $product Current product.
- * @return string Modified admin HTML.
+ * Admin product list customizations (stock status HTML + list CSS) moved to
+ * the shopchop-theme-settings plugin: includes/class-admin-product-columns.php
  */
-add_filter( 'woocommerce_admin_stock_html', function ( $html, $product ) {
-	$status = $product->get_stock_status();
-
-	if ( $status === 'pre_order' ) {
-		return '<mark class="pre-order">'   . __( 'Pre-Order Item', 'shopchop' ) . '</mark>';
-	}
-	if ( $status === 'coming_soon' ) {
-		return '<mark class="coming-soon">' . __( 'Coming Soon',    'shopchop' ) . '</mark>';
-	}
-
-	return $html;
-}, 10, 2 );
-
-
-
-/**
- * Inject admin-only CSS to style status badges and tighten the product list table.
- * Scoped to the Products list screen only.
- */
-add_action( 'admin_head', 'shopchop_admin_custom_status_styles' );
-function shopchop_admin_custom_status_styles() {
-	$screen = get_current_screen();
-	if ( ! $screen || $screen->id !== 'edit-product' ) return;
-	?>
-	<style>
-		mark.instock     { background:#d1fae5!important; color:#065f46!important; padding:2px 8px; border-radius:4px; font-weight:600!important; }
-		mark.outofstock  { background:#ffe4e6!important; color:#9f1239!important; padding:2px 8px; border-radius:4px; font-weight:600!important; }
-		mark.pre-order   { background:#DBEAFE; color:#1D4ED8; padding:2px 8px; border-radius:4px; font-weight:600; }
-		mark.coming-soon { background:#FEF3C7; color:#92400E; padding:2px 8px; border-radius:4px; font-weight:600; }
-
-		.wp-list-table .column-thumb { width:80px!important; }
-		.thumb.column-thumb .attachment-thumbnail { max-width:80px; max-height:80px; }
-
-		.wp-list-table .column-name a.row-title {
-			display:-webkit-box;
-			-webkit-line-clamp:1;
-			-webkit-box-orient:vertical;
-			overflow:hidden;
-			max-width:300px;
-		}
-
-		.wp-list-table .column-cogs_value,
-		.wp-list-table th#cost { display:none; }
-
-		.wp-list-table .column-is_in_stock,
-		.wp-list-table .column-price { width:20ch!important; }
-
-		.wp-list-table .column-price .discount-price { display:flex; align-items:center; gap:4px; flex-wrap:wrap; white-space:nowrap; }
-		.wp-list-table .column-price .discount-price del.regular  { color:#999; font-size:.8rem; }
-		.wp-list-table .column-price .discount-price .discount    { background:#ffe4e6; color:#9f1239; font-size:.7rem; font-weight:700; padding:1px 5px; border-radius:4px; }
-		.wp-list-table .column-price .discount-price .sale        { font-weight:700; color:#065f46; }
-	</style>
-	<?php
-}
 
 
 
