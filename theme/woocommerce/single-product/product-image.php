@@ -20,6 +20,15 @@ global $product;
 $columns           = apply_filters( 'woocommerce_product_thumbnails_columns', 4 );
 $post_thumbnail_id = $product->get_image_id();
 $gallery_image_ids = $product->get_gallery_image_ids();
+
+/**
+ * Lets a plugin (e.g. splash product video) declare that it's about to
+ * inject extra slides via JS after this template renders, so the thumbnail
+ * strip + nav arrows shell still gets rendered even for a single-image
+ * product that would otherwise get neither.
+ */
+$has_extra_gallery_slides = apply_filters( 'shopchop_gallery_has_extra_slides', false, $product );
+$show_thumbs_and_nav      = ! empty( $gallery_image_ids ) || $has_extra_gallery_slides;
 $wrapper_classes   = apply_filters(
 	'woocommerce_single_product_image_gallery_classes',
 	array(
@@ -62,13 +71,13 @@ $wrapper_classes   = apply_filters(
 			<?php endif; ?>
 		</div>
 
-		<?php if ( $post_thumbnail_id && ( ! empty( $gallery_image_ids ) ) ) : ?>
+		<?php if ( $post_thumbnail_id && $show_thumbs_and_nav ) : ?>
 			<div class="swiper-button-prev" role="button" aria-label="<?php esc_attr_e( 'Previous product image', 'shopchop' ); ?>"></div>
 			<div class="swiper-button-next" role="button" aria-label="<?php esc_attr_e( 'Next product image', 'shopchop' ); ?>"></div>
 		<?php endif; ?>
 	</div>
 
-	<?php if ( $post_thumbnail_id && ! empty( $gallery_image_ids ) ) : ?>
+	<?php if ( $post_thumbnail_id && $show_thumbs_and_nav ) : ?>
 		<div class="splashshop-gallery-thumbs swiper">
 			<div class="swiper-wrapper">
 				<div class="swiper-slide">
