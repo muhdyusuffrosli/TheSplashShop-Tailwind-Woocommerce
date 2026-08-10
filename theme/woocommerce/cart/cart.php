@@ -145,15 +145,31 @@ defined('ABSPATH') || exit; ?>
 									<div class="product-stock-status">
 										<?php
 											$stock_status = $_product->get_stock_status();
-											$stock_labels = array(
-												'instock'    => '<span class="cart-stock instock">'    . esc_html__( 'In Stock', 'shopchop' )    . '</span>',
-												'outofstock' => '<span class="cart-stock outofstock">' . esc_html__( 'Out of Stock', 'shopchop' ) . '</span>',
-												'pre_order'  => '<span class="cart-stock pre-order">'  . esc_html__( 'Pre-Order', 'shopchop' )   . '</span>',
-												'coming_soon'=> '<span class="cart-stock coming-soon">'. esc_html__( 'Coming Soon', 'shopchop' )  . '</span>',
+											$stock_text   = array(
+												'instock'     => __( 'In Stock', 'shopchop' ),
+												'outofstock'  => __( 'Out of Stock', 'shopchop' ),
+												'pre_order'   => __( 'Pre-Order', 'shopchop' ),
+												'coming_soon' => __( 'Coming Soon', 'shopchop' ),
 											);
 
-											if (isset($stock_labels[$stock_status])) {
-												echo '<div class="cart-item-stock">' . $stock_labels[$stock_status] . '</div>';
+											if ( isset( $stock_text[ $stock_status ] ) ) {
+												$qty        = $_product->managing_stock() ? $_product->get_stock_quantity() : null;
+												$qty_suffix = '';
+
+												if ( null !== $qty ) {
+													$qty_suffix = ' &middot; ' . sprintf(
+														/* translators: %d: remaining stock quantity. */
+														esc_html( _n( '%d item left', '%d items left', $qty, 'shopchop' ) ),
+														$qty
+													);
+												}
+
+												printf(
+													'<div class="cart-item-stock"><span class="cart-stock %s">%s</span>%s</div>',
+													esc_attr( str_replace( '_', '-', $stock_status ) ),
+													esc_html( $stock_text[ $stock_status ] ),
+													wp_kses( $qty_suffix, array() )
+												);
 											}
 										?>
 									</div>
