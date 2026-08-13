@@ -14,6 +14,10 @@ get_header();
 	<main id="main">
 
 		<?php
+		if (function_exists('woocommerce_breadcrumb')) {
+			woocommerce_breadcrumb();
+		}
+
 		/* Start the Loop */
 		while (have_posts()) :
 			the_post();

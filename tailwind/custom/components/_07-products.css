@@ -32,6 +32,7 @@
 }
 
 .shopchop-wrapper.shopchop-woocommerce,
+.woocommerce,
 .shopchop-homepage-wrapper {
 
 	h2.shop-section-title {
@@ -181,15 +182,6 @@
 					}
 				}
 			}
-		}
-	}
-
-	/* Breadcrumb */
-	.woocommerce-breadcrumb {
-		@apply inline-flex flex-wrap items-center p-3 border bg-white border-neutral-300 rounded-lg mb-6;
-
-		a {
-			@apply transition-all hover:text-primary-900 active:text-primary-900 focus:text-primary-900;
 		}
 	}
 

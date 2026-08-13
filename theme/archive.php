@@ -13,6 +13,12 @@ get_header();
 <section id="primary" class="archive-main-template">
 	<main id="main">
 
+			<?php
+			if ( function_exists( 'woocommerce_breadcrumb' ) ) {
+				woocommerce_breadcrumb();
+			}
+			?>
+
 			<?php if ( have_posts() ) : ?>
 
 				<header class="archive-page-header">

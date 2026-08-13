@@ -35,10 +35,18 @@ get_header();
 				// Both Checkout Page and Order Received (Thank You) Page
 				get_template_part('template-parts/woocommerce/content', 'simple');
 
+			} elseif (is_cart()) {
+				// WooCommerce Cart Page
+				get_template_part('template-parts/woocommerce/content', 'simple');
+
 			} else {
 				// Default page content
+				if (function_exists('woocommerce_breadcrumb')) {
+					woocommerce_breadcrumb();
+				}
+
 				get_template_part('template-parts/content/content', 'page');
-				
+
 			}
 
 			// If comments are open, or we have at least one comment, load

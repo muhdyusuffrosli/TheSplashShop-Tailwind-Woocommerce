@@ -35,9 +35,32 @@
  * Post title styles
  */
 .page-title,
-.entry-title,
+.entry-title {
+	@apply mx-auto text-2xl md:text-3xl lg:text-5xl font-extrabold;
+}
+
 .archive-page-title {
 	@apply mx-auto text-2xl md:text-3xl lg:text-5xl font-extrabold mb-8;
+}
+
+/**
+ * Space out WooCommerce shortcode wrappers (checkout, cart, my-account)
+ * when they render directly below the page's entry-header.
+ */
+.entry-header + [class*="woocommerce"] {
+	@apply mt-6;
+}
+
+/**
+ * Breadcrumb — used site-wide (pages, posts, archives, shop/product
+ * templates), not just inside the WooCommerce-scoped wrapper.
+ */
+.woocommerce-breadcrumb {
+	@apply inline-flex flex-wrap items-center p-3 border bg-white border-neutral-300 rounded-lg mb-6;
+
+	a {
+		@apply transition-all hover:text-primary-900 active:text-primary-900 focus:text-primary-900;
+	}
 }
 
 /**
