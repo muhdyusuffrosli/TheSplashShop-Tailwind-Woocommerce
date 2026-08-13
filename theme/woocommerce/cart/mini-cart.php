@@ -15,7 +15,7 @@
  *
  * @see     https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
- * @version 10.0.0
+ * @version 10.9.0
  */
 
 defined('ABSPATH') || exit;
@@ -71,7 +71,14 @@ do_action('woocommerce_before_mini_cart'); ?>
 									<div class="mini-cart-item-meta">
 										<span class="mini-cart-item-name"><?php echo wp_kses_post($product_name); ?></span>
 										<?php echo wp_kses_post( wc_get_formatted_cart_item_data( $cart_item ) ); ?>
-										<span class="quantity">&times; <?php echo esc_html( $cart_item['quantity'] ); ?></span>
+										<?php
+										echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+											'woocommerce_widget_cart_item_quantity',
+											'<span class="quantity">&times; ' . esc_html( $cart_item['quantity'] ) . '</span>',
+											$cart_item,
+											$cart_item_key
+										);
+										?>
 									</div>	
 									<span class="price"><?php echo wp_kses_post($product_price); ?></span>
 								</div>

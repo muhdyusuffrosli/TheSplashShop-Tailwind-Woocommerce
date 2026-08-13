@@ -12,7 +12,7 @@
  *
  * @see     https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
- * @version 9.8.0
+ * @version 10.9.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -25,7 +25,7 @@ if ( ! wp_doing_ajax() ) {
 	<?php if ( WC()->cart && WC()->cart->needs_payment() ) : ?>
 		<div class="payment-methods-wrapper">
 			<h4 class="payment-methods-title"><?php esc_html_e( 'Payment Methods', 'woocommerce' ); ?></h4>
-			<ul class="wc_payment_methods payment_methods methods">
+			<ul class="wc_payment_methods payment_methods methods" aria-label="<?php esc_attr_e( 'Payment methods', 'woocommerce' ); ?>">
 				<?php
 				if ( ! empty( $available_gateways ) ) {
 					foreach ( $available_gateways as $gateway ) {
