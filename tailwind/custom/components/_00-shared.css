@@ -67,7 +67,7 @@
  * not Elementor's own typography/color panels.
  */
 .shopchop-heading {
-	@apply mt-0 text-xl lg:text-3xl font-extrabold text-balance leading-tight;
+	@apply mt-0 text-xl lg:text-3xl font-extrabold leading-tight;
 
 	&.shopchop-heading-section {
 		@apply uppercase bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent;
@@ -79,7 +79,7 @@
 }
 
 .shopchop-paragraph {
-	@apply leading-relaxed text-balance;
+	@apply leading-relaxed;
 
 	&.shopchop-paragraph-sm { @apply text-sm; }
 	&.shopchop-paragraph-base { @apply text-base lg:text-lg; }
