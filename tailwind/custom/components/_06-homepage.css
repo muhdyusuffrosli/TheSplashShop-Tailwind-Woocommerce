@@ -69,22 +69,75 @@
 	}
 }
 
+/* ── Hero Carousel Simple ── */
+.shopchop-hero-simple {
+	@apply relative overflow-hidden bg-secondary-700 py-24 lg:py-32;
+
+	.hero-simple-bg {
+		@apply absolute inset-0 overflow-hidden;
+
+		.hero-simple-bg-img {
+			@apply w-full h-full object-cover blur-xs;
+		}
+	}
+
+	.hero-simple-overlay {
+		@apply absolute inset-0 bg-linear-to-b from-secondary-950/65 via-secondary-950/55 to-secondary-950/70;
+	}
+
+	.hero-simple-inner {
+		@apply relative z-1 flex flex-col items-center text-center max-w-2xl mx-auto;
+
+		.hero-simple-eyebrow {
+			@apply text-sm font-bold uppercase tracking-widest text-primary-300 text-shadow-md/30 text-shadow-foreground;
+		}
+
+		.hero-simple-heading {
+			@apply mt-2 text-2xl sm:text-3xl lg:text-5xl font-extrabold text-background leading-tight tracking-tight text-shadow-md/30 text-shadow-foreground;
+		}
+
+		.hero-simple-subheading {
+			@apply mt-4 text-lg font-normal text-secondary-200 text-shadow-md/30 text-shadow-foreground;
+		}
+
+		.hero-simple-buttons {
+			@apply mt-8 flex flex-col sm:flex-row items-center w-full sm:w-auto gap-4;
+		}
+
+		.hero-simple-button {
+			@apply inline-flex items-center justify-center w-full sm:w-auto px-8 py-3.5 font-semibold rounded-lg border-2 border-transparent transition-all active:scale-[0.97];
+
+			&.hero-simple-button-primary {
+				@apply bg-primary text-background hover:bg-primary-950 hover:ring-4 hover:ring-primary-200 active:bg-primary-950 active:ring-4 active:ring-primary-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700;
+			}
+
+			&.hero-simple-button-secondary {
+				@apply bg-transparent border-background text-background hover:bg-background hover:text-secondary-900 active:bg-background active:text-secondary-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-background;
+			}
+		}
+	}
+}
+
 /* ── Brand Logos ── */
 .shopchop-brand-logos {
-	@apply py-16 lg:py-20 bg-linear-to-br from-primary-800 to-primary-950;
+	@apply py-16 bg-linear-to-br from-primary-900 to-primary-950;
 	background-image:
 		url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='%23ffffff' fill-opacity='0.08'/%3E%3C/svg%3E"),
-		linear-gradient(to bottom right, var(--color-primary-800), var(--color-primary-950));
+		linear-gradient(to bottom right, var(--color-primary-900), var(--color-primary-950));
 
 	.brand-logo-content {
-		@apply flex flex-col lg:justify-between items-center gap-6 lg:gap-8;
+		@apply flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:justify-center lg:gap-8;
 
 		.brand-distributor-heading {
-			@apply text-2xl lg:text-4xl text-center lg:text-start font-extrabold uppercase bg-linear-to-br from-primary-50 to-primary-100 bg-clip-text text-transparent text-balance;
+			@apply text-2xl lg:text-4xl text-center lg:text-start font-extrabold uppercase lg:normal-case bg-linear-to-br from-primary-50 to-primary-100 bg-clip-text text-transparent lg:flex-shrink-0;
+		}
+
+		.brand-logo-divider {
+			@apply hidden lg:block w-px self-stretch bg-white/40 flex-shrink-0;
 		}
 
 		.brand-logo-grid {
-			@apply grid grid-cols-2 gap-4 lg:gap-6;
+			@apply grid grid-cols-2 gap-4 lg:flex lg:flex-wrap lg:gap-6;
 		}
 
 		.brand-logo-item {
@@ -101,53 +154,66 @@
 
 /* ── Category Grid ── */
 .shopchop-category-grid {
-	@apply py-20 lg:py-28;
+	@apply py-16;
 
-	.category-heading {
-		@apply text-2xl lg:text-4xl text-center lg:text-start font-extrabold uppercase bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent text-balance mb-6;
+	.category-grid-heading-wrap {
+		@apply text-center lg:text-start mb-6;
+
+		.category-heading {
+			@apply text-2xl lg:text-4xl font-extrabold bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent;
+		}
+
+		.category-subheading {
+			@apply mt-2 text-base lg:text-lg text-neutral-600;
+		}
 	}
 
 	.category-grid-wrapper {
-		@apply grid gap-4 md:gap-6 lg:gap-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
+		@apply grid gap-4 md:gap-6 lg:gap-10 grid-cols-2 lg:grid-cols-4;
 
 		.category-grid-card {
-			@apply relative flex flex-row gap-4 overflow-hidden rounded-xl border border-neutral-300 bg-white transition-all hover:border-primary hover:scale-[1.01] active:border-primary active:scale-[0.98];
+			@apply flex flex-col items-center gap-6 overflow-hidden rounded-xl border border-neutral-300 bg-white p-4 transition-all hover:border-primary hover:scale-[1.01] active:border-primary active:scale-[0.98];
 
 			.cat-image-wrapper {
-				@apply relative z-[1] block overflow-hidden transition-all flex-shrink-0 w-24 md:w-32 lg:w-40 h-auto;
+				@apply flex-shrink-0 size-32 md:size-44 lg:size-56 rounded-full bg-primary-100 flex items-center justify-center overflow-hidden p-2;
 			}
 
 			.cat-image {
-				@apply w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 group-active:scale-105;
+				@apply max-w-full max-h-full w-auto h-auto object-contain transition-all duration-300;
 			}
 
 			.cat-grid-info {
-				@apply flex justify-center gap-1 flex-col py-4 pe-4;
+				@apply flex justify-center text-center gap-1 flex-col min-w-0;
 
-				.parent-cat-name-link {
-					@apply group-hover:text-primary group-active:text-primary text-xl lg:text-2xl font-semibold after:content-[''] after:absolute after:inset-0 after:z-0;
+				.cat-name {
+					@apply text-xl lg:text-2xl font-semibold text-neutral-900 transition-all;
 				}
 
-				.subcategory-list {
-					@apply relative z-1 flex flex-col gap-1.5;
-
-					.subcategory-list-link,
-					.subcategory-list-all {
-						@apply font-medium text-neutral-700 transition-all hover:text-primary active:text-primary underline! underline-offset-2;
-					}
-
-					.subcategory-list-all {
-						@apply font-bold no-underline! inline-flex gap-1 items-center transition-all;
-
-						svg {
-							@apply w-5 h-5 transition-all;
-						}
-
-						&:hover svg, &:active svg {
-							@apply translate-x-1;
-						}
-					}
+				.cat-subtitle {
+					@apply text-sm lg:text-base text-neutral-500 transition-all;
 				}
+			}
+
+			&:hover, &:active, &:focus-visible {
+				.cat-image {
+					@apply scale-105 contrast-125;
+				}
+
+				.cat-name {
+					@apply text-primary;
+				}
+			}
+		}
+
+		.category-grid-view-all {
+			@apply col-span-2 lg:hidden inline-flex items-center justify-center gap-1.5 text-base font-bold text-primary underline underline-offset-4 transition-all hover:no-underline hover:text-primary-950 active:no-underline active:text-primary-950 focus-visible:no-underline focus-visible:text-primary-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary focus-visible:rounded-sm;
+
+			svg {
+				@apply w-5 h-5 transition-transform duration-200;
+			}
+
+			&:hover svg, &:active svg, &:focus-visible svg {
+				@apply translate-x-1;
 			}
 		}
 	}
@@ -155,41 +221,7 @@
 
 /* ── USP Bar ── */
 .shopchop-usp-bar {
-	@apply py-16 lg:py-20 border-y border-neutral-300/50 relative overflow-hidden;
-	background-color: var(--color-neutral-100);
-
-	/* Aurora background layer */
-	&::before {
-		content: '';
-		position: absolute;
-		inset: -10px;
-		pointer-events: none;
-		z-index: 0;
-		background-image:
-			repeating-linear-gradient(
-				100deg,
-				var(--color-neutral-100) 0%,
-				var(--color-neutral-100) 7%,
-				transparent 10%,
-				transparent 12%,
-				var(--color-neutral-100) 16%
-			),
-			repeating-linear-gradient(
-				100deg,
-				var(--color-warning-400) 10%,
-				var(--color-warning-200) 15%,
-				var(--color-success-300) 20%,
-				var(--color-success-200) 25%,
-				var(--color-warning-300) 30%
-			);
-		background-size: 300% 200%;
-		background-position: 50% 50%;
-		filter: blur(10px);
-		opacity: 0.4;
-		will-change: transform;
-		mask-image: radial-gradient(ellipse at 80% 0%, black 10%, transparent 70%);
-		animation: shopchop-aurora 60s linear infinite;
-	}
+	@apply py-16 border-y border-neutral-300/50 relative overflow-hidden bg-white;
 
 	/* Ensure content sits above aurora */
 	> * {
@@ -198,7 +230,7 @@
 	}
 
 	.usp-heading {
-		@apply text-2xl lg:text-4xl text-center font-extrabold uppercase bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent text-balance mb-8;
+		@apply text-2xl lg:text-4xl text-center font-extrabold bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent mb-8;
 	}
 
 	.usp-grid {
@@ -223,7 +255,7 @@
 				}
 
 				.usp-description {
-					@apply text-base text-neutral-700 text-balance;
+					@apply text-base text-neutral-700;
 				}
 			}
 		}
@@ -232,7 +264,7 @@
 
 /* ── Products Carousel ── */
 .shopchop-products-carousel {
-	@apply py-20 lg:py-28;
+	@apply py-16;
 
 	.products-carousel-header {
 		@apply flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3 mb-8;
@@ -242,7 +274,7 @@
 		@apply flex flex-col gap-1;
 
 		.products-carousel-heading {
-			@apply text-2xl lg:text-4xl font-extrabold uppercase bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent text-balance;
+			@apply text-2xl lg:text-4xl font-extrabold bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent;
 		}
 
 		.products-carousel-description {
@@ -254,7 +286,7 @@
 	
 
 	.products-carousel-view-all {
-		@apply inline-flex items-center gap-1.5 text-base lg:text-lg font-bold text-primary transition-all hover:text-primary-950 active:text-primary-950 flex-shrink-0;
+		@apply inline-flex items-center gap-1.5 text-base lg:text-lg font-bold text-primary transition-all hover:text-primary-950 active:text-primary-950 flex-shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary focus-visible:rounded-sm;
 
 		svg {
 			@apply w-5 h-5 transition-transform duration-200;
@@ -275,7 +307,7 @@
 				@apply w-full h-full flex flex-col flex-nowrap gap-0 border bg-white border-neutral-300 rounded-lg overflow-hidden;
 
 				.product-actions {
-					@apply gap-2 mt-auto;
+					@apply hidden!;
 				}
 				
 				/* Product card */
@@ -359,20 +391,13 @@
 			}
 		}
 
-		.swiper-button-prev,
-		.swiper-button-next {
-			@apply w-11 h-11 bg-primary text-background hover:bg-primary-950 active:bg-primary-950 active:scale-90 focus:bg-primary-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-background transition-all top-[40%];
+	}
 
-			.swiper-navigation-icon {
-				@apply w-6 h-6;
-			}
-		}
-
-		.swiper-button-prev { @apply left-0; }
-		.swiper-button-next { @apply right-0; }
+	.products-carousel-footer {
+		@apply flex items-center justify-between gap-4 mt-6;
 
 		.swiper-pagination {
-			@apply block relative mt-6;
+			@apply block static w-auto;
 		}
 
 		.swiper-pagination-bullet {
@@ -382,12 +407,25 @@
 		.swiper-pagination-bullet-active {
 			@apply bg-primary;
 		}
+
+		.products-carousel-nav {
+			@apply flex items-center gap-3 flex-shrink-0 ms-auto;
+
+			.swiper-button-prev,
+			.swiper-button-next {
+				@apply static w-11 h-11 mt-0 rounded-full bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-background active:bg-primary active:text-background active:scale-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700 transition-all;
+
+				.swiper-navigation-icon {
+					@apply w-6 h-6;
+				}
+			}
+		}
 	}
 }
 
 /* ── Promo Banner ── */
 .shopchop-promo-banner {
-	@apply py-16 lg:py-20;
+	@apply py-16;
 	background-image:
 		url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21.184 20c.357-.13.72-.264 1.088-.402l1.768-.661C33.64 15.347 39.647 14 50 14c10.271 0 15.362 1.222 24.629 4.928.955.383 1.869.74 2.75 1.072h6.225c-2.51-.73-5.139-1.691-8.233-2.928C65.888 13.278 60.562 12 50 12c-10.626 0-16.855 1.397-26.66 5.063l-1.767.662c-2.475.923-4.66 1.674-6.724 2.275h6.335zm0-20C13.258 2.892 8.077 4 0 4V2c5.744 0 9.951-.574 14.85-2h6.334zM77.38 0C85.239 2.966 90.502 4 100 4V2c-6.842 0-11.386-.542-16.396-2h-6.225zM0 14c8.44 0 13.718-1.21 22.272-4.402l1.768-.661C33.64 5.347 39.647 4 50 4c10.271 0 15.362 1.222 24.629 4.928C84.112 12.722 89.438 14 100 14v-2c-10.271 0-15.362-1.222-24.629-4.928C65.888 3.278 60.562 2 50 2 39.374 2 33.145 3.397 23.34 7.063l-1.767.662C13.223 10.84 8.163 12 0 12v2z' fill='%23ffffff' fill-opacity='0.06' fill-rule='evenodd'/%3E%3C/svg%3E"),
 		linear-gradient(to bottom right, var(--color-secondary-800), var(--color-secondary-950));
@@ -403,7 +441,7 @@
 			}
 
 			.promo-banner-description {
-				@apply text-base lg:text-lg text-secondary-200 leading-relaxed text-balance;
+				@apply text-base lg:text-lg text-secondary-200 leading-relaxed;
 			}			
 		}
 
@@ -411,7 +449,7 @@
 			@apply flex-shrink-0;
 
 			.promo-banner-cta {
-				@apply inline-flex items-center gap-2 px-8 py-3.5 bg-background text-secondary-900 font-bold rounded-lg uppercase transition-all hover:bg-secondary-50 hover:ring-4 hover:ring-white/30 active:bg-secondary-50 active:ring-4 active:ring-white/30 active:scale-[0.97];
+				@apply inline-flex items-center gap-2 px-8 py-3.5 bg-background text-secondary-900 font-bold rounded-lg transition-all hover:bg-secondary-50 hover:ring-4 hover:ring-white/30 active:bg-secondary-50 active:ring-4 active:ring-white/30 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-background;
 
 				svg {
 					@apply w-5 h-5 transition-transform duration-200;
@@ -465,15 +503,15 @@
 			}
 
 			.spotlight-heading {
-				@apply text-3xl lg:text-5xl font-extrabold text-foreground leading-tight tracking-tight;
+				@apply text-3xl lg:text-5xl font-extrabold bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent leading-tight tracking-tight;
 			}
 
 			.spotlight-description {
-				@apply text-base lg:text-lg text-neutral-800 leading-relaxed text-balance;
+				@apply text-base lg:text-lg text-neutral-800 leading-relaxed;
 			}
 
 			.spotlight-cta {
-				@apply inline-flex items-center gap-2 w-max px-8 py-3 bg-primary text-background font-semibold rounded-lg uppercase transition-all hover:bg-primary-950 hover:ring-4 hover:ring-primary-200 active:bg-primary-950 active:ring-4 active:ring-primary-200 active:scale-[0.97];
+				@apply inline-flex items-center gap-2 w-max px-8 py-3 bg-primary text-background font-semibold rounded-lg transition-all hover:bg-primary-950 hover:ring-4 hover:ring-primary-200 active:bg-primary-950 active:ring-4 active:ring-primary-200 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700;
 
 				svg {
 					@apply w-5 h-5 transition-transform duration-200;
@@ -498,13 +536,13 @@
 
 /* ── Testimonials Carousel ── */
 .shopchop-testimonials-carousel {
-	@apply py-16 lg:py-20 bg-neutral-50 border-y border-neutral-300;
+	@apply py-16 bg-neutral-50 border-y border-neutral-300;
 
 	.testimonials-header {
 		@apply mb-10 flex flex-col gap-2 text-center;
 
 		.testimonials-heading {
-			@apply text-2xl lg:text-4xl font-extrabold uppercase bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent text-balance;
+			@apply text-2xl lg:text-4xl font-extrabold bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent;
 		}
 
 		.testimonials-description {
@@ -585,13 +623,13 @@
 
 /* ── Blog Posts Grid ── */
 .shopchop-blog-posts-grid {
-	@apply py-16 lg:py-20 bg-neutral-50 border-y border-neutral-300;
+	@apply py-16 bg-neutral-50 border-y border-neutral-300;
 
 	.blog-grid-header {
 		@apply mb-10 flex flex-col gap-2;
 
 		.blog-grid-heading {
-			@apply text-2xl lg:text-4xl font-extrabold uppercase bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent text-balance;
+			@apply text-2xl lg:text-4xl font-extrabold uppercase bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent;
 		}
 
 		.blog-grid-description {
@@ -658,7 +696,7 @@
 			}
 			
 			.blog-post-read-more {
-				@apply text-sm font-semibold text-primary inline-flex items-center gap-1.5 transition-colors;
+				@apply text-sm font-semibold text-primary inline-flex items-center gap-1.5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary focus-visible:rounded-sm;
 				@apply group-hover:text-primary-700 group-active:text-primary-700;
 
 				svg {
@@ -690,10 +728,124 @@
 	}
 }
 
-/* ── Aurora keyframes ── */
-@keyframes shopchop-aurora {
-	from { background-position: 50% 50%; }
-	to   { background-position: 350% 50%; }
+/* ── New Membership Benefit ── */
+.shopchop-membership-benefit {
+	@apply py-16 lg:py-0 bg-white border-y border-neutral-200;
+
+	.membership-benefit-inner {
+		@apply grid grid-cols-1 items-center gap-8 lg:grid-cols-5 lg:gap-16;
+
+		.membership-benefit-content {
+			@apply w-full flex flex-col items-center lg:items-start order-1 lg:order-2 lg:col-span-3;
+
+			.membership-above-fold {
+				@apply flex flex-col items-center lg:items-start text-center lg:text-left;
+
+				.membership-benefit-pill {
+					@apply mb-4 inline-flex w-max px-4 py-1.5 rounded-full bg-linear-to-br from-primary-800 to-primary-950 text-background font-semibold uppercase tracking-wide;
+				}
+
+				.membership-benefit-heading {
+					@apply mb-2 text-3xl lg:text-5xl font-extrabold bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent leading-tight tracking-tight;
+				}
+
+				.membership-benefit-subheading {
+					@apply mb-6 text-lg text-neutral-700 leading-relaxed;
+				}
+			}
+
+			.membership-benefits {
+				.membership-benefit-list {
+					@apply w-full flex flex-col text-left gap-4 mb-8;
+				}
+
+				.membership-benefit-item {
+					@apply flex items-center gap-3;
+
+					.benefit-item-bullet {
+						@apply size-6 text-primary flex-shrink-0;
+					}
+
+					.benefit-item-text {
+						@apply text-base text-neutral-800 leading-relaxed;
+
+						strong, b {
+							@apply font-semibold text-foreground;
+						}
+					}
+				}
+			}
+
+			.membership-button-support {
+				@apply text-center;
+
+				.membership-benefit-button {
+					@apply inline-flex items-center justify-center w-full px-8 py-3.5 bg-primary text-background font-semibold rounded-lg transition-all hover:bg-primary-950 hover:ring-4 hover:ring-primary-200 active:bg-primary-950 active:ring-4 active:ring-primary-200 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700;
+				}
+
+				.membership-benefit-note {
+					@apply text-sm italic text-neutral-500 text-center;
+				}
+			}
+		}
+		
+		.membership-benefit-image-col {
+			@apply w-full order-2 lg:order-1 lg:col-span-2;
+
+			.membership-benefit-image {
+				@apply w-full h-auto aspect-square lg:aspect-[4/5] object-cover object-top rounded-xl lg:object-contain lg:rounded-none;
+			}
+		}
+	}
+}
+
+/* ── Contact Section ── */
+.shopchop-contact-section {
+	@apply relative py-16 lg:py-24 overflow-hidden bg-neutral-50 border-y border-neutral-300;
+
+	.contact-section-bg {
+		@apply absolute inset-0 overflow-hidden;
+
+		.contact-section-bg-img {
+			@apply w-full h-full object-cover blur-xs opacity-25;
+		}
+	}
+
+	.contact-section-inner {
+		@apply relative z-1 flex flex-col items-center text-center max-w-lg mx-auto;
+
+		.contact-section-heading {
+			@apply text-3xl lg:text-4xl font-extrabold bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent leading-tight tracking-tight;
+		}
+
+		.contact-section-subheading {
+			@apply mt-2 text-lg text-neutral-700;
+		}
+
+		.contact-section-primary-button {
+			@apply mt-8 text-lg inline-flex items-center justify-center gap-2 w-full px-8 py-3.5 bg-success-600 text-background font-semibold rounded-lg transition-all hover:bg-success-700 hover:ring-4 hover:ring-success-200 active:bg-success-700 active:ring-4 active:ring-success-200 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success-700;
+
+			svg, i {
+				@apply size-8 text-current fill-current!;
+			}
+		}
+
+		.contact-section-primary-note {
+			@apply mt-1 text-sm italic text-neutral-700;
+		}
+
+		.contact-section-secondary-grid {
+			@apply mt-6 w-full grid grid-cols-2 gap-4;
+		}
+
+		.contact-section-secondary-button {
+			@apply inline-flex items-center justify-center gap-2 px-4 py-3 border-2 border-secondary text-secondary font-semibold rounded-lg transition-all hover:bg-secondary hover:text-background active:bg-secondary active:text-background active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary-700;
+
+			svg, i {
+				@apply size-6 text-current fill-current!;
+			}
+		}
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -727,7 +879,7 @@
 		transition: none !important;
 	}
 
-	.subcategory-list-all svg,
+	.category-grid-view-all svg,
 	.products-carousel-view-all svg,
 	.promo-banner-cta svg,
 	.spotlight-cta svg,

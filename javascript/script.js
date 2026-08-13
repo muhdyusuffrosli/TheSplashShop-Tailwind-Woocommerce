@@ -315,6 +315,24 @@
 			document.querySelectorAll('.shopchop-products-swiper[data-swiper]').forEach((el) => {
 				try {
 					const config = JSON.parse(el.dataset.swiper);
+					// Pagination/nav live in .products-carousel-footer, a sibling of
+					// .swiper, not a descendant — Swiper's selector-string resolution
+					// only looks inside the swiper container, so resolve real elements
+					// here and pass them directly instead.
+					const scope = el.closest('.shopchop-products-carousel') || el.parentElement;
+
+					if (config.pagination && scope) {
+						const paginationEl = scope.querySelector('.swiper-pagination');
+						if (paginationEl) config.pagination.el = paginationEl;
+					}
+
+					if (config.navigation && scope) {
+						const nextEl = scope.querySelector('.swiper-button-next');
+						const prevEl = scope.querySelector('.swiper-button-prev');
+						if (nextEl) config.navigation.nextEl = nextEl;
+						if (prevEl) config.navigation.prevEl = prevEl;
+					}
+
 					new Swiper(el, config);
 				} catch (e) {
 					console.warn('ShopChop ProductsCarousel: invalid config', e);
