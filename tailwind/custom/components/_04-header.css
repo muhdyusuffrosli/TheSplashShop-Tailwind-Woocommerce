@@ -719,7 +719,7 @@
 					@apply flex border-b border-b-neutral-300/50 last:border-b-neutral-300 block w-full p-4 transition-all hover:bg-primary-100/30 hover:text-primary-900 active:bg-primary-100/30 active:text-primary-900 focus:bg-primary-100/30 focus:text-primary-900;
 
 					&.logout {
-						@apply hover:bg-error-100 hover:text-error-700 active:bg-error-100 active:text-error-700 focus:bg-error-100 focus:text-error-700;
+						@apply text-error-700 hover:bg-error-100 hover:text-error-700 active:bg-error-100 active:text-error-700 focus:bg-error-100 focus:text-error-700;
 					}
 				}
 			}
