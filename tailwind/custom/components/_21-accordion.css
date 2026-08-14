@@ -1,81 +1,71 @@
 /**
- * Core `wp-block-accordion` (Gutenberg core/accordion block).
- * Restyled to match the card look used across the theme
- * (see _00-shared.css / _07-products.css): white bg, border-neutral-300,
- * rounded-lg, primary-900 accents.
+ * ShopChop Accordion (FAQ Accordion Elementor widget).
+ * Native <details>/<summary> — no JS needed, state driven by the
+ * [open] attribute instead of a JS-toggled class.
+ * Card look matches the theme's other card styling (see _00-shared.css /
+ * _07-products.css): white bg, border-neutral-300, rounded-lg, primary-900
+ * accents.
  */
-.wp-block-accordion {
-	@apply border border-neutral-300 rounded-lg bg-white overflow-hidden mb-3 last:mb-0 transition-colors;
+.shopchop-accordion {
+	@apply flex flex-col gap-3;
+}
 
-	&:has(.wp-block-accordion-item.is-open) {
+.shopchop-accordion-item {
+	@apply border border-neutral-300 rounded-lg bg-white overflow-hidden transition-colors;
+
+	&[open] {
 		@apply border-primary-700;
 	}
+}
 
-	.wp-block-accordion-item {
-		@apply border-none;
+.shopchop-accordion-toggle {
+	@apply w-full flex items-center justify-between gap-4 px-4 lg:px-6 py-4 text-left font-semibold text-secondary-900 bg-transparent cursor-pointer transition-colors list-none hover:text-primary-900 focus-visible:outline-2 focus-visible:outline-primary-700 focus-visible:outline-offset-2;
+
+	/* Hide default <summary> marker (Chrome/Safari) and any built-in list styling. */
+	&::-webkit-details-marker {
+		display: none;
 	}
+}
 
-	.wp-block-accordion-heading {
+.shopchop-accordion-item[open] .shopchop-accordion-toggle {
+	@apply text-primary-900;
+}
+
+.shopchop-accordion-toggle-title {
+	@apply text-base lg:text-lg;
+}
+
+.shopchop-accordion-toggle-icon {
+	@apply relative shrink-0 w-5 h-5 text-neutral-500;
+
+	&::before {
+		content: "";
+		@apply absolute inset-0 bg-current;
+		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256'%3E%3Cpath d='M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z'/%3E%3C/svg%3E");
+		mask-size: contain;
+		mask-repeat: no-repeat;
+		mask-position: center;
+		transform: rotate(0deg);
+		transition: transform 200ms ease;
+	}
+}
+
+.shopchop-accordion-item[open] .shopchop-accordion-toggle-icon {
+	@apply text-primary-900;
+
+	&::before {
+		transform: rotate(180deg);
+	}
+}
+
+.shopchop-accordion-panel {
+	@apply px-4 lg:px-6 pb-4 lg:pb-6 pt-0 text-secondary-700 text-sm lg:text-base leading-relaxed;
+
+	p {
 		@apply m-0;
-	}
 
-	.wp-block-accordion-heading__toggle {
-		@apply w-full flex items-center justify-between gap-4 px-4 lg:px-6 py-4 text-left font-semibold text-secondary-900 bg-transparent cursor-pointer transition-colors hover:text-primary-900 focus-visible:outline-2 focus-visible:outline-primary-700 focus-visible:outline-offset-2;
-	}
-
-	.wp-block-accordion-heading__toggle-title {
-		@apply text-base lg:text-lg;
-
-		a {
-			@apply no-underline;
-		}
-	}
-
-	/* Core adds `text-decoration:underline` on .toggle:hover .toggle-title — kill it here. */
-	.wp-block-accordion-heading:hover .wp-block-accordion-heading__toggle-title {
-		text-decoration: none !important;
-	}
-
-	.wp-block-accordion-heading__toggle-icon {
-		@apply relative shrink-0 w-5 h-5 text-neutral-500;
-
-		/* Swap the block’s literal +/− glyphs for the Phosphor "caret-down" icon (mask so it inherits color). */
-		font-size: 0;
-
-		/* Core rotates this element itself on .is-open (style.css); neutralize it — rotation is handled by ::before below. */
-		transform: none !important;
-
-		&::before {
-			content: "";
-			@apply absolute inset-0 bg-current;
-			mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256'%3E%3Cpath d='M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z'/%3E%3C/svg%3E");
-			mask-size: contain;
-			mask-repeat: no-repeat;
-			mask-position: center;
-			transform: rotate(0deg);
-			transition: transform 200ms ease;
-		}
-	}
-
-	.wp-block-accordion-item.is-open {
-		.wp-block-accordion-heading__toggle {
-			@apply text-primary-900;
-		}
-
-		.wp-block-accordion-heading__toggle-icon {
-			@apply text-primary-900;
-
-			&::before {
-				transform: rotate(180deg);
-			}
-		}
-	}
-
-	.wp-block-accordion-panel {
-		@apply px-4 lg:px-6 pb-4 lg:pb-6 pt-0 text-secondary-700;
-
-		.wp-block-paragraph {
-			@apply m-0 text-sm lg:text-base leading-relaxed;
+		& + p {
+			@apply mt-3;
 		}
 	}
 }

@@ -70,11 +70,24 @@
 	@apply mt-0 text-xl lg:text-3xl font-extrabold leading-tight;
 
 	&.shopchop-heading-section {
-		@apply uppercase bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent;
+		@apply bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent;
 	}
 
 	&.shopchop-heading-simple {
 		@apply text-foreground;
+	}
+
+	/*
+	 * Dedicated class rather than the raw `uppercase` Tailwind utility —
+	 * this widget's PHP lives in the shopchop-theme-settings plugin, a
+	 * sibling directory outside the theme tree Tailwind's content scanner
+	 * covers (no @source points at it, and the plugin has no Tailwind setup
+	 * of its own), so a bare utility class string typed there never gets
+	 * compiled — confirmed empirically: only its `!important` variant
+	 * showed up in the compiled CSS, from an unrelated match elsewhere.
+	 */
+	&.shopchop-heading-uppercase {
+		@apply uppercase;
 	}
 }
 
