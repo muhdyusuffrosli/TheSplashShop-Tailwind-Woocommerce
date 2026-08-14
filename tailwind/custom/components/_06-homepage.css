@@ -129,7 +129,7 @@
 		@apply flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:justify-center lg:gap-8;
 
 		.brand-distributor-heading {
-			@apply text-2xl lg:text-4xl text-center lg:text-start font-extrabold uppercase lg:normal-case bg-linear-to-br from-primary-50 to-primary-100 bg-clip-text text-transparent lg:flex-shrink-0;
+			@apply text-2xl lg:text-4xl text-center lg:text-start font-extrabold bg-linear-to-br from-primary-50 to-primary-100 bg-clip-text text-transparent lg:flex-shrink-0;
 		}
 
 		.brand-logo-divider {
@@ -629,7 +629,7 @@
 		@apply mb-10 flex flex-col gap-2;
 
 		.blog-grid-heading {
-			@apply text-2xl lg:text-4xl font-extrabold uppercase bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent;
+			@apply text-2xl lg:text-4xl font-extrabold bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent;
 		}
 
 		.blog-grid-description {

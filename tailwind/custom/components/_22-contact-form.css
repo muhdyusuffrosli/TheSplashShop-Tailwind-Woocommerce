@@ -43,7 +43,7 @@
 	@apply py-6;
 
 	.quick-menu-heading {
-		@apply text-xl lg:text-3xl text-center lg:text-start font-extrabold uppercase bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent mt-0 mb-6;
+		@apply text-xl lg:text-3xl text-center lg:text-start font-extrabold bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent mt-0 mb-6;
 	}
 
 	.quick-menu-grid {
@@ -90,7 +90,7 @@
 	@apply py-6;
 
 	.contact-options-heading {
-		@apply text-xl lg:text-3xl text-center lg:text-start font-extrabold uppercase bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent mt-0 mb-6;
+		@apply text-xl lg:text-3xl text-center lg:text-start font-extrabold bg-linear-to-br from-secondary-800 to-secondary-950 bg-clip-text text-transparent mt-0 mb-6;
 	}
 
 	.contact-options-grid {
