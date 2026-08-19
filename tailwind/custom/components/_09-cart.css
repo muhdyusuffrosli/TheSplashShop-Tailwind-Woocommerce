@@ -47,13 +47,13 @@
 			@apply p-4 md:p-6 border bg-white border-neutral-300 rounded-lg overflow-hidden mb-8;
 
 			table {
-				@apply my-0;
+				@apply my-0 w-full;
 
 				tbody {
 					@apply flex flex-wrap flex-col;
 
 					tr {
-						@apply flex gap-3 lg:gap-6 border-b-neutral-300 first:pt-0 last:pb-0 py-4;
+						@apply flex gap-3 lg:gap-6 border-b last:border-0 border-b-neutral-300 first:pt-0 last:pb-0 py-4;
 
 						td {
 							@apply p-0;
@@ -71,7 +71,7 @@
 							}
 
 							&.cart-product-wrapper {
-								@apply flex flex-wrap content-start gap-1 w-full;
+								@apply flex flex-wrap content-start w-full;
 
 								.product-name {
 									@apply flex-1 min-w-0 mb-1;
@@ -108,7 +108,7 @@
 								}
 
 								.product-quantity {
-									@apply w-full my-0.5;
+									@apply w-full my-1;
 
 									.quantity-nav {
 										@apply h-8 lg:h-10;
@@ -156,6 +156,8 @@
 		}
 
 		table.shop_table {
+			@apply w-full block;
+			
 			tbody {
 				@apply flex flex-col flex-wrap;
 
@@ -163,17 +165,19 @@
 					@apply flex justify-between border-b-neutral-300;
 
 					th, td { @apply px-5 py-3; }
-					th      { @apply ps-0; }
+					th      { @apply ps-0 text-left; }
 					td      { @apply pe-0 text-end; }
 
 					&.woocommerce-shipping-totals {
-						@apply flex-col;
-
 						td {
-							@apply flex flex-col gap-2 content-end pt-3! pb-3! px-0! ms-[25%]!;
+							@apply flex flex-col gap-2 content-end pt-3! pb-3! px-0!;
 
 							.woocommerce-shipping-calculator {
 								@apply block self-end;
+
+								.shipping-calculator-button {
+									@apply text-primary underline! transition-all hover:text-primary-950 hover:no-underline! focus:text-primary-950 focus:no-underline! active:text-primary-950 active:no-underline!;
+								}
 							}
 
 							.shipping-calculator-form p {
@@ -183,7 +187,7 @@
 					}
 
 					&.order-total {
-						@apply text-xl;
+						@apply text-xl border-t border-t-neutral-300;
 					}
 				}
 			}

@@ -7,7 +7,7 @@
 .classic-checkout {
 	.checkout_coupon,
 	.woocommerce-form-login {
-		@apply border border-neutral-300 rounded-xl p-4 lg:p-6 flex flex-wrap gap-4 overflow-hidden mb-8;
+		@apply bg-white border border-neutral-300 rounded-xl p-4 lg:p-6 flex flex-wrap gap-4 overflow-hidden mb-8;
 
 		.form-row {
 			@apply my-0 first:grow;
@@ -129,7 +129,7 @@
 							@apply flex gap-4 justify-between;
 
 							&.order-total {
-								@apply text-xl mt-2;
+								@apply text-xl pt-3 mt-1 border-t border-t-neutral-300;
 							}
 
 							&.cart-discount .woocommerce-remove-coupon {

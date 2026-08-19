@@ -539,6 +539,20 @@ function shopchop_reorder_fields( $fields ) {
 
 
 
+/**
+ * Rename cart/checkout shipping package label from WC core's default
+ * "Shipment" to "Shipping".
+ *
+ * @param string $shipping_package_name Default package name.
+ * @return string Renamed package name.
+ */
+add_filter( 'woocommerce_shipping_package_name', 'shopchop_rename_shipping_package', 10, 1 );
+function shopchop_rename_shipping_package( $shipping_package_name ) {
+	return __( 'Shipping', 'shopchop' );
+}
+
+
+
 /* =============================================================================
 	§ 6  Reviews & Ratings
    ============================================================================= */
