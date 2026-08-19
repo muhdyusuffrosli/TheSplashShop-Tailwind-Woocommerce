@@ -22,7 +22,7 @@ $image_size = wc_get_image_size( 'shop_catalog' ); ?>
 
 	<?php if ( $thumbnail ) : ?>
 
-		<img src="<?php echo esc_url( $thumbnail ); ?>" alt="Thumbnail" class="wp-post-image alignright fr brand-thumbnail" width="<?php echo esc_attr( $image_size['width'] ); ?>" />
+		<img src="<?php echo esc_url( $thumbnail ); ?>" alt="Thumbnail" loading="lazy" class="wp-post-image alignright fr brand-thumbnail" width="<?php echo esc_attr( $image_size['width'] ); ?>" />
 
 	<?php endif; ?>
 

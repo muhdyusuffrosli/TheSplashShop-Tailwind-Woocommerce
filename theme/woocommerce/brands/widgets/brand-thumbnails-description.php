@@ -46,7 +46,7 @@ declare( strict_types = 1);
 		?>
 		<li class="<?php echo esc_attr( $class ); ?>" style="width: <?php echo esc_attr( $width ); ?>%;">
 			<a href="<?php echo esc_url( get_term_link( $brand->slug, 'product_brand' ) ); ?>" title="<?php echo esc_attr( $brand->name ); ?>" class="term-thumbnail">
-				<img src="<?php echo esc_url( $thumbnail ); ?>" alt="<?php echo esc_attr( $brand->name ); ?>" />
+				<img src="<?php echo esc_url( $thumbnail ); ?>" alt="<?php echo esc_attr( $brand->name ); ?>" loading="lazy" />
 			</a>
 			<div id="term-<?php echo esc_attr( $brand->term_id ); ?>" class="term-description">
 				<?php echo wp_kses_post( wpautop( wptexturize( $brand->description ) ) ); ?>
