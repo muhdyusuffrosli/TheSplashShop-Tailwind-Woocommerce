@@ -396,6 +396,89 @@ add_action( 'woocommerce_after_shop_loop_item', function () {
 
 
 
+/**
+ * AJAX add-to-cart for grouped products (own endpoint, not WC core's).
+ * WC's own wc-ajax=add_to_cart only accepts a single product_id +
+ * quantity, but a grouped product form posts one quantity[child_id]
+ * field per sub-product — so this loops through and adds each one that
+ * has a quantity > 0. Same response shape as WC_AJAX::add_to_cart() so
+ * the same JS success handler works for both.
+ */
+add_action( 'wc_ajax_shopchop_add_to_cart_grouped', 'shopchop_add_to_cart_grouped' );
+add_action( 'wc_ajax_nopriv_shopchop_add_to_cart_grouped', 'shopchop_add_to_cart_grouped' );
+function shopchop_add_to_cart_grouped() {
+	if ( empty( $_POST['quantity'] ) || ! is_array( $_POST['quantity'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		wp_send_json( array( 'error' => true, 'product_url' => wp_get_referer() ) );
+	}
+
+	$added = false;
+
+	foreach ( wp_unslash( $_POST['quantity'] ) as $product_id => $quantity ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$quantity = wc_stock_amount( $quantity );
+		if ( $quantity <= 0 ) {
+			continue;
+		}
+		if ( false !== WC()->cart->add_to_cart( absint( $product_id ), $quantity ) ) {
+			$added = true;
+		}
+	}
+
+	if ( ! $added ) {
+		wp_send_json( array( 'error' => true, 'product_url' => wp_get_referer() ) );
+	}
+
+	do_action( 'woocommerce_ajax_added_to_cart', 0 );
+
+	ob_start();
+	woocommerce_mini_cart();
+	$mini_cart = ob_get_clean();
+
+	wp_send_json( array(
+		'fragments' => apply_filters(
+			'woocommerce_add_to_cart_fragments',
+			array( 'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>' )
+		),
+		'cart_hash' => WC()->cart->get_cart_hash(),
+	) );
+}
+
+
+
+/**
+ * Rename "Additional information" to "Details" — both the product tab
+ * label and the in-tab heading.
+ *
+ * @param array $tabs Product tabs.
+ * @return array Modified tabs.
+ */
+add_filter( 'woocommerce_product_tabs', 'shopchop_rename_additional_information_tab' );
+function shopchop_rename_additional_information_tab( $tabs ) {
+	if ( isset( $tabs['additional_information'] ) ) {
+		$tabs['additional_information']['title'] = __( 'Details', 'shopchop' );
+	}
+	return $tabs;
+}
+
+
+
+/**
+ * Hide the "(0)" review count from the Reviews tab title when a product
+ * has no reviews yet — a zero-count badge reads as negative social proof.
+ *
+ * @param array $tabs Product tabs.
+ * @return array Modified tabs.
+ */
+add_filter( 'woocommerce_product_tabs', 'shopchop_hide_zero_review_count', 20 );
+function shopchop_hide_zero_review_count( $tabs ) {
+	if ( isset( $tabs['reviews'] ) ) {
+		global $product;
+		if ( $product && ! $product->get_review_count() ) {
+			$tabs['reviews']['title'] = __( 'Reviews', 'woocommerce' );
+		}
+	}
+	return $tabs;
+}
+
 /* =============================================================================
 	§ 4  Variation Swatches
    ============================================================================= */
@@ -1040,7 +1123,11 @@ function shopchop_search_bar_shortcode( $atts ) {
 	ob_start(); ?>
 	<div class="shopchop-search-wrapper">
 		<div class="shopchop-search-bar">
+			<svg class="shopchop-search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path></svg>
 			<input type="text" class="shopchop-search-input" id="<?php echo $input_id; ?>" placeholder="Search Here..." autocomplete="off">
+			<button type="button" class="shopchop-search-clear" aria-label="<?php esc_attr_e( 'Clear search', 'shopchop' ); ?>">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>
+			</button>
 			<select class="shopchop-cat-select" id="<?php echo $select_id; ?>">
 				<option value="all">All Products</option>
 			</select>
@@ -1215,7 +1302,7 @@ function shopchop_mobile_cart_details() {
 	ob_start(); ?>
 	<div class="mobile-cart-header">
 		<h3>Cart
-			<span>(<span class="cart-items-count"><span class="count-number"><?php echo $count; ?></span> <?php echo $word; ?></span>)</span>
+			<span class="mobile-cart-items-count">(<span class="count-number"><?php echo $count; ?></span> <?php echo $word; ?>)</span>
 		</h3>
 		<button id="cart-close" aria-label="Close cart">
 			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>

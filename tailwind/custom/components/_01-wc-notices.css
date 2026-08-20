@@ -48,7 +48,7 @@
 	.button.wc-backward,
 	a.restore-item,
 	a {
-		@apply ms-auto h-auto bg-secondary hover:bg-secondary-900 active:bg-secondary-900 focus:bg-secondary-900 text-background! normal-case text-base px-5 py-2 rounded-lg;
+		@apply order-last ms-auto h-auto bg-secondary hover:bg-secondary-900 active:bg-secondary-900 focus:bg-secondary-900 text-background! normal-case text-base px-5 py-2 rounded-lg;
 	}
 }
 

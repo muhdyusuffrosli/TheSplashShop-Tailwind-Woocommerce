@@ -616,10 +616,14 @@
 		}
 
 		.pool-photo-preview {
-			@apply w-full md:w-1/4 order-1 md:order-2 aspect-4/3 rounded-xl overflow-hidden border-2 border-neutral-300 bg-neutral-100;
+			@apply w-full md:w-1/4 order-1 md:order-2 aspect-4/3 rounded-xl overflow-hidden border-2 border-neutral-300 bg-neutral-100 flex items-center justify-center;
 
 			img {
 				@apply w-full h-full object-cover cursor-zoom-in;
+			}
+
+			.pool-photo-preview-placeholder {
+				@apply text-sm text-neutral-500 text-center px-4;
 			}
 		}
 

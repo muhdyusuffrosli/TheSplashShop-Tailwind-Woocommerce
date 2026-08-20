@@ -57,13 +57,25 @@
 			@apply hidden lg:block relative w-full max-w-xl mx-auto;
 
 			.shopchop-search-bar {
-				@apply bg-white;
+				@apply relative bg-white;
+
+				.shopchop-search-icon {
+					@apply absolute z-1 left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-700 pointer-events-none;
+				}
 
 				.shopchop-search-input {
-					@apply relative max-w-full lg:pe-32;
+					@apply relative max-w-full ps-11 pe-44;
 
 					&.results-active {
 						@apply rounded-b-none;
+					}
+				}
+
+				.shopchop-search-clear {
+					@apply absolute z-1 right-36 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full text-neutral-700 border-none bg-transparent cursor-pointer transition-all hover:bg-neutral-100 hover:text-neutral-900 active:bg-neutral-100 focus-visible:outline-2 focus-visible:outline-primary-700 focus-visible:outline-offset-2 hidden;
+
+					&.is-visible {
+						@apply flex;
 					}
 				}
 
@@ -451,13 +463,25 @@
 			@apply block lg:hidden relative w-full max-w-xl mx-auto;
 
 			.shopchop-search-bar {
-				@apply bg-white;
+				@apply relative bg-white;
+
+				.shopchop-search-icon {
+					@apply absolute z-1 left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-700 pointer-events-none;
+				}
 
 				.shopchop-search-input {
-					@apply relative max-w-full lg:pe-32;
+					@apply relative max-w-full ps-11 pe-44;
 
 					&.results-active {
 						@apply rounded-b-none;
+					}
+				}
+
+				.shopchop-search-clear {
+					@apply absolute z-1 right-36 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full text-neutral-700 border-none bg-transparent cursor-pointer transition-all hover:bg-neutral-100 hover:text-neutral-900 active:bg-neutral-100 focus-visible:outline-2 focus-visible:outline-primary-700 focus-visible:outline-offset-2 hidden;
+
+					&.is-visible {
+						@apply flex;
 					}
 				}
 

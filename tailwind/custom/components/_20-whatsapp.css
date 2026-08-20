@@ -15,4 +15,8 @@
 	svg {
 		@apply w-5 h-5 shrink-0;
 	}
+
+	body.shopchop-drawer-open & {
+		@apply opacity-0! pointer-events-none!;
+	}
 }

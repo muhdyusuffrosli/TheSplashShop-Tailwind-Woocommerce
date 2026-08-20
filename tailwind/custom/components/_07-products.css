@@ -137,11 +137,11 @@
 				@apply bg-primary-900 text-background hover:bg-primary-950 hover:text-background hover:ring-4 hover:ring-primary-100 active:bg-primary-950 active:text-background active:ring-4 active:ring-primary-100 focus:bg-primary-950 focus:text-background focus:ring-4 focus:ring-primary-100 disabled:opacity-50 disabled:cursor-not-allowed;
 
 				&.loading {
-					@apply opacity-70 cursor-wait relative;
+					@apply opacity-70 cursor-wait inline-flex items-center justify-center gap-2;
 
 					&::after {
 						content: '';
-						@apply absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin;
+						@apply w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin shrink-0;
 					}
 				}
 			}
@@ -297,6 +297,10 @@
 		form.cart {
 			@apply flex flex-wrap gap-3 w-full;
 
+			.added_to_cart {
+				@apply hidden!;
+			}
+
 			table.woocommerce-grouped-product-list {
 				@apply w-full mb-4;
 
@@ -351,7 +355,16 @@
 			}
 
 			.button {
-				@apply px-8;
+				@apply px-6;
+
+				&.loading {
+					@apply opacity-70 cursor-wait inline-flex items-center justify-center gap-2;
+
+					&::after {
+						content: '';
+						@apply w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin shrink-0;
+					}
+				}
 			}
 
 			&.variations_form {
@@ -432,11 +445,11 @@
 		@apply w-full border border-neutral-300 rounded-xl overflow-hidden bg-white;
 
 		.tabs.wc-tabs {
-			@apply flex gap-10 flex-nowrap border-b border-b-neutral-300 px-4 md:px-6 overflow-hidden overflow-x-auto snap-x snap-mandatory;
+			@apply flex flex-nowrap justify-around gap-0 sm:justify-start sm:gap-10 border-b border-b-neutral-300 px-4 md:px-6;
 		}
 
 		.tabs.wc-tabs li {
-			@apply relative font-bold uppercase;
+			@apply relative font-bold capitalize sm:uppercase;
 
 			a {
 				@apply w-max inline-block py-4 text-neutral-700 transition-all;

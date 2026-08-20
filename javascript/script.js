@@ -431,11 +431,31 @@
 				.on('added_to_cart', (e, fragments, hash, $btn) => {
 					$btn.removeClass('loading')
 						.addClass('added')
-						.text('Added!')
+						.text('Added to Cart!')
 						.prop('disabled', false);
-					setTimeout(
-						() => $btn.next('.added_to_cart').fadeIn(200),
-						300
+
+					const $card = $btn.closest('li.product');
+					const productName = $card.length
+						? $card
+								.find('.woocommerce-loop-product__title')
+								.first()
+								.text()
+								.trim()
+						: $('.product_title').first().text().trim();
+
+					ShopChop.Toast.show(
+						productName
+							? `Item “<strong>${Utils.escapeHtml(
+									productName
+								)}</strong>” added into cart.`
+							: 'Item added into cart.',
+						'success'
+					);
+				})
+				.on('added_to_wishlist', () => {
+					ShopChop.Toast.show(
+						'Item added to your wishlist.',
+						'success'
 					);
 				});
 		},
@@ -506,6 +526,54 @@
 	};
 
 	/* =========================================================================
+        5b. Cart Page – AJAX Remove Item (no page reload)
+        Reuses the existing wc_get_cart_remove_url() link/nonce — just loads
+        it via AJAX instead of a full navigation, then swaps in the fresh
+        cart table + totals. Same partial-reload pattern as ShopPagination.
+    ========================================================================= */
+	ShopChop.CartItemRemove = {
+		init() {
+			$(document).on(
+				'click',
+				'.woocommerce-cart-form .cart-table-wrapper a.remove',
+				function (e) {
+					e.preventDefault();
+
+					const $link = $(this);
+					const $row = $link.closest('tr');
+					const href = $link.attr('href');
+					const $cartWrapper = $('.classic-cart');
+
+					if (!href || !$cartWrapper.length) return;
+
+					$row.css({ opacity: '0.5', pointerEvents: 'none' });
+
+					$cartWrapper.load(
+						`${href} .classic-cart > *`,
+						(response, status) => {
+							if (status === 'error') {
+								$row.css({
+									opacity: '1',
+									pointerEvents: 'auto',
+								});
+								ShopChop.Toast.show(
+									'Failed to remove item. Please try again.',
+									'error'
+								);
+								return;
+							}
+
+							$(document.body)
+								.trigger('wc_fragment_refresh')
+								.trigger('removed_from_cart');
+						}
+					);
+				}
+			);
+		},
+	};
+
+	/* =========================================================================
         6. Variable Product – Price display & Add-to-Cart availability
         (Previously two separate event-binding blocks; merged into one.)
     ========================================================================= */
@@ -551,6 +619,182 @@
 						.prop('disabled', true)
 						.removeClass('wc-variation-is-unavailable');
 				});
+		},
+	};
+
+	/* =========================================================================
+        6b. Single Product – AJAX Add to Cart (no page reload)
+        Mirrors WC core's archive-page AJAX flow (wc-add-to-cart.js) for the
+        single-product form, which core does not AJAX-ify on its own.
+        Grouped-product forms (multiple quantity[child_id] fields) route to
+        our own shopchop_add_to_cart_grouped endpoint, since WC's own
+        wc-ajax=add_to_cart only accepts a single product_id + quantity.
+        Falls back to a native submit on error or when data is incomplete.
+    ========================================================================= */
+	ShopChop.SingleAddToCart = {
+		init() {
+			if (typeof wc_add_to_cart_params === 'undefined') return;
+
+			$(document).on('submit', 'form.cart', function (e) {
+				const $form = $(this);
+				const $button = $form.find('.single_add_to_cart_button');
+				if (!$button.length || $button.prop('disabled')) return;
+
+				const isGrouped = $form.hasClass('grouped_form');
+				let endpoint = 'add_to_cart';
+				let data;
+
+				if (isGrouped) {
+					const quantities = $form
+						.find('input[name^="quantity["]')
+						.filter(function () {
+							return parseFloat(this.value) > 0;
+						});
+					if (!quantities.length) return;
+
+					endpoint = 'shopchop_add_to_cart_grouped';
+					data = $form.serializeArray().reduce((acc, field) => {
+						acc[field.name] = field.value;
+						return acc;
+					}, {});
+				} else {
+					let productId;
+					if ($form.hasClass('variations_form')) {
+						const variationId = $form
+							.find('input[name="variation_id"]')
+							.val();
+						if (!variationId || variationId === '0') return;
+						productId = variationId;
+					} else {
+						productId =
+							$button.val() || $form.data('product_id');
+					}
+					if (!productId) return;
+
+					data = $form.serializeArray().reduce((acc, field) => {
+						acc[field.name] = field.value;
+						return acc;
+					}, {});
+					data.product_id = productId;
+
+					// A stray hidden "add-to-cart" field (variation
+					// template) would otherwise also trip WC core's
+					// classic wp_loaded add-to-cart handler on this same
+					// request, double-adding the item.
+					delete data['add-to-cart'];
+				}
+
+				e.preventDefault();
+
+				$(document.body).trigger('adding_to_cart', [$button, data]);
+
+				$.ajax({
+					type: 'POST',
+					url: wc_add_to_cart_params.wc_ajax_url
+						.toString()
+						.replace('%%endpoint%%', endpoint),
+					data,
+					dataType: 'json',
+					success(response) {
+						if (!response) return;
+
+						if (response.error && response.product_url) {
+							window.location = response.product_url;
+							return;
+						}
+
+						if (
+							wc_add_to_cart_params.cart_redirect_after_add ===
+							'yes'
+						) {
+							window.location = wc_add_to_cart_params.cart_url;
+							return;
+						}
+
+						$(document.body).trigger('added_to_cart', [
+							response.fragments,
+							response.cart_hash,
+							$button,
+						]);
+					},
+					error() {
+						// Fall back to a real submit (bypasses this handler —
+						// native .submit() does not dispatch the jQuery
+						// 'submit' event).
+						$form[0].submit();
+					},
+				});
+			});
+		},
+	};
+
+	/* =========================================================================
+        6c. Wishlist Table – AJAX Add to Cart (no page reload)
+        The wishlist page's "Add to cart" link is a plain
+        ?add-to-cart={id} URL (YITH Wishlist's own markup), not
+        intercepted by anything — clicking it does a full navigation.
+        This is a generic delegated handler keyed off the URL pattern,
+        not any YITH-specific class/DOM structure, so it keeps working
+        even if the plugin's internal markup changes on update. Skips
+        (falls back to normal navigation) when the link also carries
+        YITH's "remove from wishlist after add to cart" param, since
+        replicating that side effect ourselves isn't worth the coupling
+        risk to YITH's internals.
+    ========================================================================= */
+	ShopChop.WishlistAddToCart = {
+		init() {
+			if (typeof wc_add_to_cart_params === 'undefined') return;
+
+			$(document).on(
+				'click',
+				'.wishlist_table a[href*="add-to-cart="]',
+				function (e) {
+					const href = $(this).attr('href');
+					if (href.indexOf('remove_from_wishlist_after_add_to_cart') !== -1) {
+						return; // let YITH handle its own side effect natively
+					}
+
+					let productId;
+					try {
+						productId = new URL(href, window.location.origin)
+							.searchParams.get('add-to-cart');
+					} catch (err) {
+						return;
+					}
+					if (!productId) return;
+
+					e.preventDefault();
+
+					const $button = $(this);
+					$(document.body).trigger('adding_to_cart', [$button]);
+
+					$.ajax({
+						type: 'POST',
+						url: wc_add_to_cart_params.wc_ajax_url
+							.toString()
+							.replace('%%endpoint%%', 'add_to_cart'),
+						data: { product_id: productId, quantity: 1 },
+						dataType: 'json',
+						success(response) {
+							if (!response) return;
+
+							if (response.error && response.product_url) {
+								window.location = response.product_url;
+								return;
+							}
+
+							$(document.body).trigger('added_to_cart', [
+								response.fragments,
+								response.cart_hash,
+								$button,
+							]);
+						},
+						error() {
+							window.location = href;
+						},
+					});
+				}
+			);
 		},
 	};
 
@@ -991,8 +1235,15 @@
 			}, 300);
 
 			// ── Event listeners ───────────────────────────────────────────
+			const toggleClearButton = ($el) => {
+				$el.closest('.shopchop-search-bar')
+					.find('.shopchop-search-clear')
+					.toggleClass('is-visible', $el.val().trim().length > 0);
+			};
+
 			$input.on('keyup', function () {
 				const term = $(this).val().trim();
+				toggleClearButton($(this));
 				term.length ? search(term) : clearResults();
 			});
 
@@ -1006,6 +1257,14 @@
 			$catSelect.on('change', () => {
 				const term = $input.val().trim();
 				if (term.length) search(term);
+			});
+
+			$(document).on('click', '.shopchop-search-clear', function () {
+				const $bar = $(this).closest('.shopchop-search-bar');
+				const $thisInput = $bar.find('.shopchop-search-input');
+				$thisInput.val('').trigger('focus');
+				toggleClearButton($thisInput);
+				clearResults();
 			});
 
 			$(document).on('click', (e) => {
@@ -1249,10 +1508,9 @@
 			const miniCart = createMiniCart({
 				contentEl: $content,
 				onCountUpdate(count) {
-					$header.find('.count-number').text(count);
 					$header
-						.find('.cart-items-count')
-						.html(Utils.itemsLabel(count));
+						.find('.mobile-cart-items-count')
+						.html(`(${Utils.itemsLabel(count)})`);
 					// Keep desktop badge in sync
 					$('.cart-count-badge').text(count >= 0 ? count : '');
 				},
@@ -1280,7 +1538,7 @@
         17. Toast Notifications
     ========================================================================= */
 	ShopChop.Toast = {
-		show(message, type = 'error') {
+		show(message, type = 'error', action = null) {
 			const existing = document.getElementById('shopchop-toast');
 			if (existing) existing.remove();
 
@@ -1291,15 +1549,23 @@
 			toast.className = `shopchop-toast shopchop-toast--${type}`;
 
 			const msg = document.createElement('span');
-			msg.textContent = message;
+			msg.innerHTML = message;
+			toast.appendChild(msg);
+
+			if (action && action.text && action.href) {
+				const actionLink = document.createElement('a');
+				actionLink.href = action.href;
+				actionLink.className = 'shopchop-toast-action';
+				actionLink.textContent = action.text;
+				toast.appendChild(actionLink);
+			}
 
 			const closeBtn = document.createElement('button');
 			closeBtn.className = 'shopchop-toast-close';
 			closeBtn.setAttribute('aria-label', 'Dismiss notification');
 			closeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>`;
-
-			toast.appendChild(msg);
 			toast.appendChild(closeBtn);
+
 			document.body.appendChild(toast);
 
 			const dismiss = () => {
@@ -1563,7 +1829,10 @@
 		ShopChop.CartButton.init();
 		ShopChop.ReviewsPagination.init();
 		ShopChop.ShopPagination.init();
+		ShopChop.CartItemRemove.init();
 		ShopChop.VariableProduct.init();
+		ShopChop.SingleAddToCart.init();
+		ShopChop.WishlistAddToCart.init();
 		ShopChop.PillSwatches.init();
 		ShopChop.QuantityButtons.init();
 		ShopChop.AccountMenu.init();

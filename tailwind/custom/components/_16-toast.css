@@ -3,19 +3,23 @@
  */
 
 .shopchop-toast {
-	@apply fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] px-5 py-3 rounded-lg shadow-lg text-sm font-medium text-background pointer-events-none;
-	@apply opacity-0 translate-y-2 transition-all duration-300 ease-out;
+	@apply fixed bottom-6 left-1/2 -translate-x-1/2 lg:left-auto lg:right-6 lg:top-6 lg:bottom-auto lg:translate-x-0 z-[9999] px-5 py-3 rounded-lg shadow-lg text-sm font-medium text-background pointer-events-none;
+	@apply opacity-0 translate-y-2 lg:-translate-y-2 transition-all duration-300 ease-out;
 	@apply flex items-center gap-3;
 	min-width: 16rem;
 	max-width: calc(100vw - 2rem);
 
 	&.is-visible {
-		@apply opacity-100 translate-y-0 pointer-events-auto;
+		@apply opacity-100 translate-y-0 lg:translate-y-0 pointer-events-auto;
 	}
 
 	&.shopchop-toast--error   { @apply bg-error-700; }
 	&.shopchop-toast--success { @apply bg-success-700; }
 	&.shopchop-toast--info    { @apply bg-primary-900; }
+
+	.shopchop-toast-action {
+		@apply shrink-0 whitespace-nowrap font-semibold underline underline-offset-2 hover:no-underline active:no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-background;
+	}
 
 	.shopchop-toast-close {
 		@apply ml-auto flex-shrink-0 opacity-70 hover:opacity-100 active:opacity-100 transition-opacity cursor-pointer;

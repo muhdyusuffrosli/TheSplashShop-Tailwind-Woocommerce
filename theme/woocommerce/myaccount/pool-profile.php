@@ -149,6 +149,8 @@ $get_meta = function( $key ) use ( $editing ) {
 					<div class="pool-photo-preview" id="pool_photo_preview">
 						<?php if ( $photo_id ) : ?>
 							<img src="<?php echo esc_url( wp_get_attachment_image_url( $photo_id, 'medium' ) ); ?>" data-full="<?php echo esc_url( wp_get_attachment_image_url( $photo_id, 'large' ) ); ?>" alt="" />
+						<?php else : ?>
+							<span class="pool-photo-preview-placeholder"><?php esc_html_e( 'Your image will appear here', 'shopchop' ); ?></span>
 						<?php endif; ?>
 					</div>
 
