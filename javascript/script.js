@@ -50,6 +50,23 @@
 			return `<span class="count-number">${count}</span> ${word}`;
 		},
 
+		/**
+		 * Show a click-blocking loading overlay (spinner + text) inside
+		 * $container. Returns the overlay element — call .remove() on it
+		 * once loading finishes.
+		 * @param {jQuery} $container Must have position:relative.
+		 * @param {object} [opts]
+		 * @param {'middle'|'top'} [opts.position='middle']
+		 * @returns {jQuery}
+		 */
+		showLoadingOverlay($container, opts = {}) {
+			const position = opts.position || 'middle';
+			const topClass = position === 'top' ? ' shop-loading-overlay--top' : '';
+			return $(
+				`<div class="shop-loading-overlay${topClass}"><div class="shop-loading-indicator"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" opacity="0.25"/><path d="M22 12a10 10 0 0 0-10-10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><span class="shop-loading-text">Loading... Please wait</span></div></div>`
+			).appendTo($container);
+		},
+
 		escapeHtml(str) {
 			return String(str)
 				.replace(/&/g, '&amp;')
@@ -474,24 +491,23 @@
 
 					const $dynamic = $('#reviews-dynamic');
 					const url = $(this).attr('href');
+					const $spinner = Utils.showLoadingOverlay($dynamic);
 
-					$dynamic
-						.addClass('is-loading')
-						.load(
-							`${url} #reviews-dynamic > *`,
-							(response, status) => {
-								if (status !== 'success') return;
-								$dynamic.removeClass('is-loading');
-								$('html, body').animate(
-									{
-										scrollTop:
-											$('#reviews').offset().top - 100,
-									},
-									300
-								);
-								$(document.body).trigger('init_reviews');
-							}
-						);
+					$dynamic.load(
+						`${url} #reviews-dynamic > *`,
+						(response, status) => {
+							$spinner.remove();
+							if (status !== 'success') return;
+							$('html, body').animate(
+								{
+									scrollTop:
+										$('#reviews').offset().top - 100,
+								},
+								300
+							);
+							$(document.body).trigger('init_reviews');
+						}
+					);
 				}
 			);
 		},
@@ -509,19 +525,86 @@
 
 				const $container = $('#primary');
 				const url = $(this).attr('href');
+				const $spinner = Utils.showLoadingOverlay($container);
 
-				$container
-					.css('opacity', '0.5')
-					.load(`${url} #primary > *`, (response, status) => {
+				$container.load(
+					`${url} #primary > *`,
+					(response, status) => {
+						$spinner.remove();
 						if (status === 'error') return;
-						$container.css('opacity', '1');
 						$('html, body').animate(
 							{ scrollTop: $container.offset().top - 50 },
 							300
 						);
 						$(document.body).trigger('post-load');
-					});
+					}
+				);
 			});
+		},
+	};
+
+	/* =========================================================================
+        5c. Shop / Archive – AJAX Sort (no page reload)
+        WC core's own woocommerce.js auto-submits .woocommerce-ordering on
+        change, but its own listener is bound directly to the elements
+        present at page load (not delegated) — after our AJAX swap replaces
+        #primary, that binding is dead on the new dropdown. So this binds
+        its own delegated change → submit, then intercepts the submit and
+        swaps #primary the same way ShopPagination does.
+    ========================================================================= */
+	ShopChop.ShopSorting = {
+		init() {
+			let isLoading = false;
+
+			$(document).on('change', '.woocommerce-ordering select.orderby', function () {
+				$(this).closest('form').trigger('submit');
+			});
+
+			$(document).on(
+				'submit',
+				'.woocommerce-ordering',
+				function (e) {
+					// Only intercept on pages that have a product grid
+					if (!$('.products').length) return;
+					// Prevent overlapping requests (e.g. rapid dropdown changes)
+					if (isLoading) {
+						e.preventDefault();
+						return;
+					}
+
+					e.preventDefault();
+					isLoading = true;
+
+					const $form = $(this);
+					const $container = $('#primary');
+					const action = $form.attr('action') || window.location.href;
+					const url = `${action}${action.includes('?') ? '&' : '?'}${$form.serialize()}`;
+
+					const $spinner = Utils.showLoadingOverlay($container, {
+						position: 'top',
+					});
+
+					$container.load(
+						`${url} #primary > *`,
+						(response, status) => {
+							isLoading = false;
+							$spinner.remove();
+
+							if (status === 'error') {
+								// Degrade gracefully rather than leaving the
+								// dropdown stuck non-functional.
+								$form[0].submit();
+								return;
+							}
+
+							$('html, body').animate(
+								{ scrollTop: $container.offset().top - 50 },
+								300
+							);
+							$(document.body).trigger('post-load');
+						});
+				}
+			);
 		},
 	};
 
@@ -1829,6 +1912,7 @@
 		ShopChop.CartButton.init();
 		ShopChop.ReviewsPagination.init();
 		ShopChop.ShopPagination.init();
+		ShopChop.ShopSorting.init();
 		ShopChop.CartItemRemove.init();
 		ShopChop.VariableProduct.init();
 		ShopChop.SingleAddToCart.init();

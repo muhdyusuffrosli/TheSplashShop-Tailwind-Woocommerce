@@ -56,7 +56,7 @@
  * templates), not just inside the WooCommerce-scoped wrapper.
  */
 .woocommerce-breadcrumb {
-	@apply inline-flex flex-wrap items-center p-3 border bg-white border-neutral-300 rounded-lg mb-6;
+	@apply inline-flex flex-wrap items-center p-3 border bg-white border-neutral-300 rounded-lg mb-6 text-sm sm:text-base;
 
 	a {
 		@apply transition-all hover:text-primary-900 active:text-primary-900 focus:text-primary-900;
